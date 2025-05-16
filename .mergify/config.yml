@@ -4,9 +4,10 @@
 #   `build` - .github/workflows/build.yml
 
 pull_request_rules:
-- name: Auto merge dependency updates
+- name: Auto merge dependency updates (excluding major)
   conditions:
   - author~=^(dependabot(-preview)?|renovate)\[bot\]$
+  - -label=dependencies-major
   - -files~=^(\.github/|\.gitlab/)?renovate\.json5?$
   - -files~=^\.renovaterc(\.json5?)?$
   - -conflict
