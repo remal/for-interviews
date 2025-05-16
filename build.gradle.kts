@@ -10,7 +10,7 @@ plugins {
 
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(21))
+        languageVersion = JavaLanguageVersion.of(21)
     }
 }
 
@@ -39,6 +39,17 @@ tasks.test {
         stackTraceFilters("GROOVY")
         events("FAILED")
     }
+}
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+java {
+    sourceCompatibility = JavaVersion.toVersion(toolchain.languageVersion.get().asInt())
+    targetCompatibility = JavaVersion.toVersion(toolchain.languageVersion.get().asInt())
+}
+
+tasks.withType<JavaCompile>().configureEach {
+    options.release = java.toolchain.languageVersion.map(JavaLanguageVersion::asInt)
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
