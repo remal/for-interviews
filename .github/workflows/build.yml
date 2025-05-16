@@ -44,4 +44,4 @@ jobs:
         distribution: temurin
     - name: Build
       run: |
-        ./gradlew build
+        ./gradlew-retry-connection-timeouts build
