@@ -1,1 +1,1 @@
-# for-interviews
+# Skeleton for Technical Interviews

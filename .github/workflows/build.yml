@@ -1,0 +1,47 @@
+name: build
+
+on:
+  push:
+    branches:
+    - main
+  pull_request: { }
+  schedule:
+  - cron: '0 0 * * *'
+  workflow_dispatch: { }
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  GRADLE_OPTS: -Dorg.gradle.parallel=true -Dorg.gradle.workers.max=4 -Dorg.gradle.warning.mode=all -Dorg.gradle.logging.stacktrace=all -Dorg.gradle.daemon=true -Dhttp.keepAlive=false -Dsun.net.client.defaultConnectTimeout=15000 -Dsun.net.client.defaultReadTimeout=600000 -Dsun.net.http.retryPost=false -Dsun.io.useCanonCaches=false -Djava.awt.headless=true -Dorg.gradle.internal.launcher.welcomeMessageEnabled=false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    concurrency:
+      group: ${{github.workflow}}-build-${{strategy.job-index||'0'}}-${{github.ref}}
+      cancel-in-progress: true
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+        fetch-depth: 0
+    - name: Validate Gradle Wrapper
+      uses: Wandalen/wretry.action@v3.8.0
+      with:
+        action: gradle/actions/wrapper-validation@v4
+        attempt_limit: 3
+        attempt_delay: 5000
+    - name: Cache Gradle
+      uses: remal-github-actions/cache-gradle@main
+    - name: Setup Java
+      uses: actions/setup-java@v4
+      with:
+        java-version: 21
+        distribution: temurin
+    - name: Build
+      run: |
+        ./gradlew build
