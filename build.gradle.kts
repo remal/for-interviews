@@ -16,6 +16,9 @@ java {
 }
 
 dependencies {
+    implementation("org.jspecify:jspecify:1.0.0")
+
+
     testImplementation(platform("org.junit:junit-bom:5.12.2"))
     testImplementation(platform("org.mockito:mockito-bom:5.17.0"))
 
