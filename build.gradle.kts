@@ -1,4 +1,5 @@
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import java.util.jar.JarFile
 
 plugins {
     java
@@ -20,6 +21,7 @@ dependencies {
 
     testImplementation("org.junit.jupiter:junit-jupiter-api")
     testImplementation("org.junit.jupiter:junit-jupiter-params")
+    testImplementation("org.mockito:mockito-junit-jupiter")
     testImplementation("org.assertj:assertj-core:3.27.3")
 
     testRuntimeOnly(platform("org.junit:junit-bom:5.12.2"))
@@ -43,13 +45,38 @@ tasks.test {
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-java {
-    sourceCompatibility = JavaVersion.toVersion(toolchain.languageVersion.get().asInt())
-    targetCompatibility = JavaVersion.toVersion(toolchain.languageVersion.get().asInt())
+tasks.withType<Test>().configureEach {
+    onlyIf {
+        configureAgents(classpath, this)
+        return@onlyIf true
+    }
 }
 
-tasks.withType<JavaCompile>().configureEach {
-    options.release = java.toolchain.languageVersion.map(JavaLanguageVersion::asInt)
+tasks.withType<JavaExec>().configureEach {
+    onlyIf {
+        configureAgents(classpath, this)
+        return@onlyIf true
+    }
+}
+
+fun configureAgents(classpath: FileCollection, options: JavaForkOptions) {
+    classpath.filter { it.isFile }.forEach { file ->
+        if (options.allJvmArgs.contains("-javaagent:${file.path}")
+            || options.allJvmArgs.contains("-javaagent:${file.absolutePath}")
+        ) {
+            return
+        }
+
+        JarFile(file).use { jarFile ->
+            jarFile.manifest?.mainAttributes?.let { mainAttrs ->
+                val isAgent = sequenceOf("Premain-Class", "Agent-Class", "Launcher-Agent-Class")
+                    .any { mainAttrs.getValue(it) != null }
+                if (isAgent) {
+                    options.jvmArgs("-javaagent:${file.absolutePath}")
+                }
+            }
+        }
+    }
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
