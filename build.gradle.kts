@@ -20,7 +20,7 @@ dependencies {
     implementation("org.jetbrains:annotations:26.0.2-1")
 
     testImplementation(platform("org.junit:junit-bom:5.13.4"))
-    testImplementation(platform("org.mockito:mockito-bom:5.19.0"))
+    testImplementation(platform("org.mockito:mockito-bom:5.20.0"))
 
     testImplementation("org.junit.jupiter:junit-jupiter-api")
     testImplementation("org.junit.jupiter:junit-jupiter-params")
