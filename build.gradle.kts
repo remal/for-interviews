@@ -3,7 +3,7 @@ import java.util.jar.JarFile
 
 plugins {
     java
-    id("name.remal.lombok") version "3.1.5"
+    id("name.remal.lombok") version "3.1.6"
     idea
 }
 
