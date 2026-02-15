@@ -19,7 +19,7 @@ dependencies {
     implementation("org.jspecify:jspecify:1.0.0")
     implementation("org.jetbrains:annotations:26.0.2-1")
 
-    testImplementation(platform("org.junit:junit-bom:6.0.2"))
+    testImplementation(platform("org.junit:junit-bom:6.0.3"))
     testImplementation(platform("org.mockito:mockito-bom:5.21.0"))
 
     testImplementation("org.junit.jupiter:junit-jupiter-api")
@@ -27,7 +27,7 @@ dependencies {
     testImplementation("org.mockito:mockito-junit-jupiter")
     testImplementation("org.assertj:assertj-core:3.27.7")
 
-    testRuntimeOnly(platform("org.junit:junit-bom:6.0.2"))
+    testRuntimeOnly(platform("org.junit:junit-bom:6.0.3"))
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
